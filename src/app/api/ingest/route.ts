@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
   // Embed every chunk in one batched call rather than one request per chunk.
   // Voyage (like most embedding APIs) accepts a list of inputs per request,
   // which is both faster and cheaper than looping individual calls.
-  const vectors = await embed(pieces, "RETRIEVAL_DOCUMENT");
+  const vectors = await embed(pieces, "search_document");
 
   const [doc] = await db.insert(documents).values({ title }).returning();
 

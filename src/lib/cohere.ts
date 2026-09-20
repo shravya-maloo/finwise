@@ -1,29 +1,33 @@
 import type { RetrievedChunk } from "./retrieval";
 
-const GENERATE_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
+const CHAT_URL = "https://api.cohere.com/v2/chat";
+const MODEL = "command-a-03-2025";
 
-export async function callGemini(prompt: string): Promise<string> {
-  const apiKey = process.env.GEMINI_API_KEY;
+export async function callCohere(prompt: string): Promise<string> {
+  const apiKey = process.env.COHERE_API_KEY;
   if (!apiKey) {
-    throw new Error("GEMINI_API_KEY is not set. Add it to .env.local (see .env.example).");
+    throw new Error("COHERE_API_KEY is not set. Add it to .env.local (see .env.example).");
   }
 
-  const res = await fetch(`${GENERATE_URL}?key=${apiKey}`, {
+  const res = await fetch(CHAT_URL, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+    },
     body: JSON.stringify({
-      contents: [{ parts: [{ text: prompt }] }],
+      model: MODEL,
+      messages: [{ role: "user", content: prompt }],
     }),
   });
 
   if (!res.ok) {
     const body = await res.text().catch(() => "");
-    throw new Error(`Gemini generation request failed: ${res.status} ${body}`);
+    throw new Error(`Cohere chat request failed: ${res.status} ${body}`);
   }
 
   const data = await res.json();
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-  return text ?? "";
+  return data.message?.content?.[0]?.text ?? "";
 }
 
 /**
@@ -49,6 +53,6 @@ ${context}
 
 Question: ${question}`;
 
-  const text = await callGemini(prompt);
+  const text = await callCohere(prompt);
   return text || "No answer generated.";
 }

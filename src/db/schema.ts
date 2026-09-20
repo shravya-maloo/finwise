@@ -15,7 +15,7 @@ export const chunks = pgTable("chunks", {
   documentId: integer("document_id").notNull(),
   chunkIndex: integer("chunk_index").notNull(),
   content: text("content").notNull(),
-  embedding: vector("embedding", { dimensions: 768 }).notNull(),
+  embedding: vector("embedding", { dimensions: 1024 }).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 

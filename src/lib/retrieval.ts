@@ -21,7 +21,7 @@ export type RetrievedChunk = {
 export async function retrieveRelevantChunks(question: string, limit = 5): Promise<RetrievedChunk[]> {
   await ensureReady();
 
-  const queryVector = await embedOne(question, "RETRIEVAL_QUERY");
+  const queryVector = await embedOne(question, "search_query");
   const distance = cosineDistance(chunks.embedding, queryVector);
 
   const rows = await db

@@ -40,7 +40,7 @@ async function bootstrap() {
       document_id INTEGER NOT NULL,
       chunk_index INTEGER NOT NULL,
       content TEXT NOT NULL,
-      embedding VECTOR(768) NOT NULL,
+      embedding VECTOR(1024) NOT NULL,
       created_at TIMESTAMPTZ NOT NULL DEFAULT now()
     )
   `;

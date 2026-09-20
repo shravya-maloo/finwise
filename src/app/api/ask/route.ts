@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { retrieveRelevantChunks } from "@/lib/retrieval";
-import { generateAnswer } from "@/lib/gemini";
+import { generateAnswer } from "@/lib/cohere";
 
 export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => ({}));
