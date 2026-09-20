@@ -1,13 +1,14 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f7f9fc;
-  --foreground: #1a2233;
+  --background: #eef4ff;
+  --foreground: #0f2247;
   --card: #ffffff;
-  --border: #dde3ec;
-  --accent: #2f6fed;
-  --accent-soft: #eaf1ff;
-  --muted: #64748b;
+  --border: #cfdcf5;
+  --accent: #1d5fe0;
+  --accent-dark: #14428f;
+  --accent-soft: #e3edff;
+  --muted: #4c6180;
 }
 
 @theme inline {
@@ -16,9 +17,13 @@
 }
 
 body {
-  background: var(--background);
+  background:
+    radial-gradient(circle at 12% 0%, rgba(29, 95, 224, 0.10), transparent 45%),
+    radial-gradient(circle at 90% 15%, rgba(29, 95, 224, 0.08), transparent 40%),
+    var(--background);
   color: var(--foreground);
   font-family: system-ui, -apple-system, sans-serif;
+  min-height: 100dvh;
 }
 
 .card {

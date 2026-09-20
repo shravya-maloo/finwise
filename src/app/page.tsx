@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import InfoModal from "@/components/InfoModal";
 
 type Doc = { id: number; title: string; chunkCount: number };
 type Source = { documentTitle: string; similarity: number; excerpt: string };
 type Answer = { answer: string; sources: Source[] };
 
 export default function Home() {
+  const [showInfo, setShowInfo] = useState(false);
   const [docs, setDocs] = useState<Doc[] | null>(null);
   const [title, setTitle] = useState("");
   const [pastedText, setPastedText] = useState("");
@@ -87,7 +89,16 @@ export default function Home() {
 
   return (
     <main className="max-w-2xl mx-auto px-4 py-10 flex flex-col gap-8">
-      <header className="text-center flex flex-col gap-1.5">
+      <header className="text-center flex flex-col items-center gap-1.5 relative">
+        <button
+          onClick={() => setShowInfo(true)}
+          aria-label="How FinWise works"
+          title="How FinWise works"
+          className="absolute top-0 right-0 w-8 h-8 rounded-full grid place-items-center font-bold"
+          style={{ background: "var(--accent-soft)", color: "var(--accent-dark)", border: "1px solid var(--border)" }}
+        >
+          ⓘ
+        </button>
         <h1 className="text-3xl font-bold" style={{ color: "var(--accent)" }}>
           FinWise
         </h1>
@@ -95,6 +106,8 @@ export default function Home() {
           Upload financial aid and scholarship documents, then ask questions answered only from what you uploaded.
         </p>
       </header>
+
+      {showInfo && <InfoModal onClose={() => setShowInfo(false)} />}
 
       <section className="card p-5">
         <h2 className="font-semibold mb-3">1. Add a document</h2>
@@ -182,7 +195,7 @@ export default function Home() {
                   Retrieved chunks (this is what was actually handed to the model, ranked by similarity)
                 </p>
                 {result.sources.map((s, i) => (
-                  <div key={i} className="text-xs p-3 rounded-lg" style={{ background: "#f1f5f9" }}>
+                  <div key={i} className="text-xs p-3 rounded-lg" style={{ background: "var(--accent-soft)" }}>
                     <div className="flex justify-between font-semibold mb-1">
                       <span>{s.documentTitle}</span>
                       <span style={{ color: "var(--accent)" }}>similarity {s.similarity}</span>

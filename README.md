@@ -4,6 +4,8 @@ A RAG (Retrieval-Augmented Generation) app: upload financial aid and scholarship
 
 Built as a learning project to understand RAG mechanics end to end, and to be a genuinely useful tool for the very confusing world of financial aid rules. **The entire stack is free** — no credit card required anywhere.
 
+An info button (ⓘ) in the header explains how to use the app, how it works, and what makes it different from a typical "chat with your PDF" tool, directly in the UI.
+
 ## Why RAG, and how it actually works
 
 An LLM has no idea what's in your specific FAFSA guide or your specific scholarship's terms. Two bad options without RAG: ask it directly (it'll often confidently make something up), or paste the whole document into every prompt (falls apart past one short document).
