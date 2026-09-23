@@ -5,7 +5,14 @@ import InfoModal from "@/components/InfoModal";
 
 type Doc = { id: number; title: string; chunkCount: number };
 type Source = { documentTitle: string; similarity: number; excerpt: string };
-type Answer = { answer: string; sources: Source[] };
+type Claim = { claim: string; status: "supported" | "partial" | "unsupported"; reason: string };
+type Answer = { answer: string; sources: Source[]; claims?: Claim[] };
+
+const CLAIM_STYLE: Record<Claim["status"], { icon: string; color: string; label: string }> = {
+  supported: { icon: "✓", color: "#16a34a", label: "Supported" },
+  partial: { icon: "~", color: "#ca8a04", label: "Partially supported" },
+  unsupported: { icon: "✕", color: "#dc2626", label: "Not supported" },
+};
 
 export default function Home() {
   const [showInfo, setShowInfo] = useState(false);
@@ -188,6 +195,34 @@ export default function Home() {
             <div className="p-4 rounded-lg text-sm whitespace-pre-line" style={{ background: "var(--accent-soft)" }}>
               {result.answer}
             </div>
+
+            {result.claims && result.claims.length > 0 && (
+              <div className="flex flex-col gap-2">
+                <p className="text-xs font-semibold" style={{ color: "var(--muted)" }}>
+                  Fact-check: each claim in the answer above, verified against the retrieved chunks (not just
+                  re-asked to confirm itself)
+                </p>
+                {result.claims.map((c, i) => {
+                  const style = CLAIM_STYLE[c.status];
+                  return (
+                    <div key={i} className="text-xs p-3 rounded-lg card">
+                      <div className="flex items-start gap-2">
+                        <span className="font-bold shrink-0" style={{ color: style.color }}>
+                          {style.icon}
+                        </span>
+                        <div>
+                          <p className="font-medium">{c.claim}</p>
+                          <p className="mt-0.5" style={{ color: style.color }}>
+                            {style.label}
+                            {c.reason && <span style={{ color: "var(--muted)" }}>: {c.reason}</span>}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
 
             {result.sources.length > 0 && (
               <div className="flex flex-col gap-2">

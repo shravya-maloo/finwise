@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { retrieveRelevantChunks } from "@/lib/retrieval";
 import { generateAnswer } from "@/lib/cohere";
+import { verifyAnswer } from "@/lib/verification";
 
 export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => ({}));
@@ -21,9 +22,21 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Step 2: augmented generation. Hand those chunks to Claude along with
-    // the question, and let it answer using only what it was given.
+    // Step 2: augmented generation. Hand those chunks to the model along
+    // with the question, and let it answer using only what it was given.
     const answer = await generateAnswer(question, sources);
+
+    // Step 3: verification. Don't just trust the answer because it sounds
+    // right, actually decompose it into claims and check each one against
+    // the source chunks. If this step itself fails for any reason, don't
+    // let that take down a perfectly good answer the user already has,
+    // just report that verification wasn't available for this response.
+    let claims: Awaited<ReturnType<typeof verifyAnswer>> = [];
+    try {
+      claims = await verifyAnswer(answer, sources);
+    } catch {
+      claims = [];
+    }
 
     return NextResponse.json({
       answer,
@@ -32,6 +45,7 @@ export async function POST(req: NextRequest) {
         similarity: Math.round(s.similarity * 1000) / 1000,
         excerpt: s.content.slice(0, 220) + (s.content.length > 220 ? "..." : ""),
       })),
+      claims,
     });
   } catch (err) {
     return NextResponse.json(

@@ -80,9 +80,9 @@ export default function InfoModal({ onClose }: { onClose: () => void }) {
                 in-memory lookup that stops working past a handful of documents.
               </li>
               <li>
-                <strong>Built for a domain where a wrong answer costs real money</strong>, which is also why a
-                fact-checking layer (verifying each claim in an answer against the source text) is the planned next
-                step, not an afterthought.
+                <strong>Every answer is fact-checked, not just generated.</strong> A second pass breaks the answer
+                into individual claims and checks each one against the source text (green check = supported, red
+                cross = not) instead of trusting the first thing the model says.
               </li>
             </ul>
           </section>

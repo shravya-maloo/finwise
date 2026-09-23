@@ -61,11 +61,16 @@ src/
     index.ts                     # Postgres connection, pgvector extension + table bootstrap
 ```
 
-## What this project doesn't do (yet) — the natural next phase
+## The verification layer
 
-Right now, step 3 (generation) is trusted to only say things the retrieved chunks support, but nothing actually checks that. The model can still drift, misread a chunk, or state something with more confidence than the source gives it.
+Most RAG demos stop at generation: retrieve some text, hand it to a model, trust whatever comes back. FinWise doesn't. After Cohere generates an answer, a second, independent pass:
 
-The planned next phase is a **verification layer**: after generating an answer, decompose it into individual factual claims and check each one back against the retrieved chunks to confirm it's actually supported, not just plausible. That's the harder, more valuable half of building something trustworthy in a high-stakes domain like financial aid, where a wrong answer has a real dollar cost, and it's the part most RAG tutorials skip entirely.
+1. **Decomposes the answer into individual factual claims** (a separate API call, deliberately, since asking a model to critique its own still-fresh output in the same turn tends to just re-confirm it; a fresh call treats the answer as text to analyze rather than something it just committed to)
+2. **Checks each claim against the actual retrieved chunks**, not the model's memory, and labels it supported, partially supported, or not supported, with a one-line reason
+
+The UI shows this under every answer: a green check for a claim the sources actually back up, a red cross for one that isn't, so a plausible-sounding but ungrounded statement gets caught and flagged rather than trusted at face value. This is the harder, more valuable half of building something trustworthy in a high-stakes domain like financial aid, where a wrong answer has a real dollar cost, and it's the part most RAG tutorials skip entirely.
+
+If the verification step itself fails (a malformed response from the model, for instance), it degrades gracefully: the original answer and sources are still returned, and affected claims are labeled as unable to be verified rather than either crashing the request or silently assuming everything checks out. See `lib/verification.ts`.
 
 ## A note on accuracy
 
