@@ -6,6 +6,8 @@ Built as a learning project to understand RAG mechanics end to end, and to be a 
 
 An info button (ⓘ) in the header explains how to use the app, how it works, and what makes it different from a typical "chat with your PDF" tool, directly in the UI.
 
+Access FinWise here: https://finwise-roan.vercel.app/
+
 ## Why RAG, and how it actually works
 
 An LLM has no idea what's in your specific FAFSA guide or your specific scholarship's terms. Two bad options without RAG: ask it directly (it'll often confidently make something up), or paste the whole document into every prompt (falls apart past one short document).
